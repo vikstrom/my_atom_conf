@@ -1,0 +1,108 @@
+(function() {
+  var ChildProcess, Path, ScriptRunnerProcess, Shellwords;
+
+  ChildProcess = require('child_process');
+
+  Path = require('path');
+
+  Shellwords = require('shellwords');
+
+  module.exports = ScriptRunnerProcess = (function() {
+    ScriptRunnerProcess.run = function(view, cmd, env, editor) {
+      var scriptRunnerProcess;
+      scriptRunnerProcess = new ScriptRunnerProcess(view);
+      scriptRunnerProcess.execute(cmd, env, editor);
+      return scriptRunnerProcess;
+    };
+
+    function ScriptRunnerProcess(view) {
+      this.view = view;
+      this.child = null;
+    }
+
+    ScriptRunnerProcess.prototype.detach = function() {
+      return this.view = null;
+    };
+
+    ScriptRunnerProcess.prototype.stop = function(signal) {
+      if (signal == null) {
+        signal = 'SIGINT';
+      }
+      if (this.child) {
+        console.log("Sending", signal, "to child", this.child, "pid", this.child.pid);
+        process.kill(-this.child.pid, signal);
+        if (this.view) {
+          return this.view.append('<Sending ' + signal + '>', 'stdin');
+        }
+      }
+    };
+
+    ScriptRunnerProcess.prototype.execute = function(cmd, env, editor) {
+      var appendBuffer, args, cwd, startTime;
+      cwd = atom.project.path;
+      args = Shellwords.split(cmd);
+      if (editor.getPath()) {
+        editor.save();
+        cwd = Path.dirname(editor.getPath());
+      }
+      if (editor.getPath() && !editor.buffer.isModified()) {
+        args.push(editor.getPath());
+        appendBuffer = false;
+      } else {
+        appendBuffer = true;
+      }
+      cmd = args.join(' ');
+      args.unshift(__dirname + "/script-wrapper.py");
+      this.child = ChildProcess.spawn(args[0], args.slice(1), {
+        cwd: cwd,
+        env: env,
+        detached: true
+      });
+      this.view.header('Running: ' + cmd + ' (pgid ' + this.child.pid + ')');
+      this.child.stderr.on('data', (function(_this) {
+        return function(data) {
+          if (_this.view != null) {
+            _this.view.append(data, 'stderr');
+            return _this.view.scrollToBottom();
+          }
+        };
+      })(this));
+      this.child.stdout.on('data', (function(_this) {
+        return function(data) {
+          if (_this.view != null) {
+            _this.view.append(data, 'stdout');
+            return _this.view.scrollToBottom();
+          }
+        };
+      })(this));
+      this.child.on('close', (function(_this) {
+        return function(code, signal) {
+          var duration;
+          _this.child = null;
+          if (_this.view) {
+            duration = ' after ' + ((new Date - startTime) / 1000) + ' seconds';
+            if (signal) {
+              return _this.view.footer('Exited with signal ' + signal + duration);
+            } else {
+              code || (code = 0);
+              return _this.view.footer('Exited with status ' + code + duration);
+            }
+          }
+        };
+      })(this));
+      startTime = new Date;
+      if (appendBuffer) {
+        this.child.stdin.write(editor.getText());
+      }
+      return this.child.stdin.end();
+    };
+
+    return ScriptRunnerProcess;
+
+  })();
+
+}).call(this);
+
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAiZmlsZSI6ICIiLAogICJzb3VyY2VSb290IjogIiIsCiAgInNvdXJjZXMiOiBbCiAgICAiL2hvbWUvdmljdG9yLy5hdG9tL3BhY2thZ2VzL3NjcmlwdC1ydW5uZXIvbGliL3NjcmlwdC1ydW5uZXItcHJvY2Vzcy5jb2ZmZWUiCiAgXSwKICAibmFtZXMiOiBbXSwKICAibWFwcGluZ3MiOiAiQUFBQTtBQUFBLE1BQUEsbURBQUE7O0FBQUEsRUFBQSxZQUFBLEdBQWUsT0FBQSxDQUFRLGVBQVIsQ0FBZixDQUFBOztBQUFBLEVBQ0EsSUFBQSxHQUFPLE9BQUEsQ0FBUSxNQUFSLENBRFAsQ0FBQTs7QUFBQSxFQUVBLFVBQUEsR0FBYSxPQUFBLENBQVEsWUFBUixDQUZiLENBQUE7O0FBQUEsRUFJQSxNQUFNLENBQUMsT0FBUCxHQUNNO0FBQ0osSUFBQSxtQkFBQyxDQUFBLEdBQUQsR0FBTSxTQUFDLElBQUQsRUFBTyxHQUFQLEVBQVksR0FBWixFQUFpQixNQUFqQixHQUFBO0FBQ0osVUFBQSxtQkFBQTtBQUFBLE1BQUEsbUJBQUEsR0FBMEIsSUFBQSxtQkFBQSxDQUFvQixJQUFwQixDQUExQixDQUFBO0FBQUEsTUFFQSxtQkFBbUIsQ0FBQyxPQUFwQixDQUE0QixHQUE1QixFQUFpQyxHQUFqQyxFQUFzQyxNQUF0QyxDQUZBLENBQUE7QUFJQSxhQUFPLG1CQUFQLENBTEk7SUFBQSxDQUFOLENBQUE7O0FBT2EsSUFBQSw2QkFBQyxJQUFELEdBQUE7QUFDWCxNQUFBLElBQUMsQ0FBQSxJQUFELEdBQVEsSUFBUixDQUFBO0FBQUEsTUFDQSxJQUFDLENBQUEsS0FBRCxHQUFTLElBRFQsQ0FEVztJQUFBLENBUGI7O0FBQUEsa0NBV0EsTUFBQSxHQUFRLFNBQUEsR0FBQTthQUNOLElBQUMsQ0FBQSxJQUFELEdBQVEsS0FERjtJQUFBLENBWFIsQ0FBQTs7QUFBQSxrQ0FjQSxJQUFBLEdBQU0sU0FBQyxNQUFELEdBQUE7O1FBQUMsU0FBUztPQUNkO0FBQUEsTUFBQSxJQUFHLElBQUMs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
+
+//# sourceURL=/home/victor/.atom/packages/script-runner/lib/script-runner-process.coffee

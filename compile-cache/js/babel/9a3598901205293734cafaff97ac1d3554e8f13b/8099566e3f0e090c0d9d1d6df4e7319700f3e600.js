@@ -1,0 +1,58 @@
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _libGitStatus = require("../lib/GitStatus");
+
+var _libGitStatus2 = _interopRequireDefault(_libGitStatus);
+
+"use babel";
+
+describe("GitStatus", function () {
+  var workspaceElement = undefined,
+      activationPromise = undefined;
+
+  beforeEach(function () {
+    workspaceElement = atom.views.getView(atom.workspace);
+    activationPromise = atom.packages.activatePackage("git-status");
+  });
+
+  describe("when the git-status:toggle event is triggered", function () {
+    it("hides and shows the panel", function () {
+      expect(workspaceElement.querySelector(".git-status")).not.toExist();
+
+      atom.commands.dispatch(workspaceElement, "git-status:toggle");
+      waitsForPromise(function () {
+        return activationPromise;
+      });
+
+      runs(function () {
+        expect(workspaceElement.querySelector(".git-status")).toExist();
+        var element = workspaceElement.querySelector(".git-status");
+        expect(element).toExist();
+
+        var panel = atom.workspace.panelForItem(element);
+        expect(panel.isVisible()).toBe(true);
+        atom.commands.dispatch(workspaceElement, "git-status:toggle");
+        expect(panel.isVisible()).toBe(false);
+      });
+    });
+  });
+
+  it("hides and shows the view", function () {
+    jasmine.attachToDOM(workspaceElement);
+    expect(workspaceElement.querySelector(".git-status")).not.toExist();
+    atom.commands.dispatch(workspaceElement, "git-status:toggle");
+
+    waitsForPromise(function () {
+      return activationPromise;
+    });
+
+    runs(function () {
+      var element = workspaceElement.querySelector(".git-status");
+      expect(element).toBeVisible();
+      atom.commands.dispatch(workspaceElement, "git-status:toggle");
+      expect(element).not.toBeVisible();
+    });
+  });
+});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3ZpY3Rvci8uYXRvbS9wYWNrYWdlcy9naXQtc3RhdHVzL3NwZWMvR2l0U3RhdHVzLXNwZWMuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7NEJBRXNCLGtCQUFrQjs7OztBQUZ4QyxXQUFXLENBQUM7O0FBSVosUUFBUSxDQUFDLFdBQVcsRUFBRSxZQUFNO0FBQzFCLE1BQUksZ0JBQWdCLFlBQUE7TUFBRSxpQkFBaUIsWUFBQSxDQUFDOztBQUV4QyxZQUFVLENBQUMsWUFBTTtBQUNmLG9CQUFnQixHQUFHLElBQUksQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxTQUFTLENBQUMsQ0FBQztBQUN0RCxxQkFBaUIsR0FBRyxJQUFJLENBQUMsUUFBUSxDQUFDLGVBQWUsQ0FBQyxZQUFZLENBQUMsQ0FBQztHQUNqRSxDQUFDLENBQUM7O0FBRUgsVUFBUSxDQUFDLCtDQUErQyxFQUFFLFlBQU07QUFDOUQsTUFBRSxDQUFDLDJCQUEyQixFQUFFLFlBQU07QUFDcEMsWUFBTSxDQUFDLGdCQUFnQixDQUFDLGFBQWEsQ0FBQyxhQUFhLENBQUMsQ0FBQyxDQUFDLEdBQUcsQ0FBQyxPQUFPLEVBQUUsQ0FBQzs7QUFFcEUsVUFBSSxDQUFDLFFBQVEsQ0FBQyxRQUFRLENBQUMsZ0JBQWdCLEVBQUUsbUJBQW1CLENBQUMsQ0FBQztBQUM5RCxxQkFBZSxDQUFDLFlBQU07QUFDcEIsZUFBTyxpQkFBaUIsQ0FBQztPQUMxQixDQUFDLENBQUM7O0FBR0gsVUFBSSxDQUFDLFlBQU07QUFDVCxjQUFNLENBQUMsZ0JBQWdCLENBQUMsYUFBYSxDQUFDLGFBQWEsQ0FBQyxDQUFDLENBQUMsT0FBTyxFQUFFLENBQUM7QUFDaEUsWUFBSSxPQUFPLEdBQUcsZ0JBQWdCLENBQUMsYUFBYSxDQUFDLGFBQWEsQ0FBQyxDQUFDO0FBQzVELGNBQU0sQ0FBQyxPQUFPLENBQUMsQ0FBQyxPQUFPLEVBQUUsQ0FBQzs7QUFFMUIsWUFBSSxLQUFLLEdBQUcsSUFBSSxDQUFDLFNBQVMsQ0FBQyxZQUFZLENBQUMsT0FBTyxDQUFDLENBQUM7QUFDakQsY0FBTSxDQUFDLEtBQUssQ0FBQyxTQUFTLEVBQUUsQ0FBQyxDQUFDLElBQUksQ0FBQyxJQUFJLENBQUMsQ0FBQztBQUNyQyxZQUFJLENBQUMsUUFBUSxDQUFDLFFBQVEsQ0FBQyxnQkFBZ0IsRUFBRSxtQkFBbUIsQ0FBQyxDQUFDO0FBQzlELGNBQU0sQ0FBQyxLQUFLLENBQUMsU0FBUyxFQUFFLENBQUMsQ0FBQyxJQUFJLENBQUMsS0FBSyxDQUFDLENBQUM7T0FDdkMsQ0FBQyxDQUFDO0tBQ0osQ0FBQyxDQUFDO0dBQ0osQ0FBQyxDQUFDOztBQUVILElBQUUsQ0FBQywwQkFBMEIsRUFBRSxZQUFNO0FBQ25DLFdBQU8sQ0FBQyxXQUFXLENBQUMsZ0JBQWdCLENBQUMsQ0FBQztBQUN0QyxVQUFNLENBQUMsZ0JBQWdCLENBQUMsYUFBYSxDQUFDLGFBQWEsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDLE9BQU8sRUFBRSxDQUFDO0FBQ3BFLFFBQUksQ0FBQyxRQUFRLENBQUMsUUFBUSxDQUFDLGdCQUFnQixFQUFFLG1CQUFtQixDQUFDLENBQUM7O0FBRTlELG1CQUFlLENBQUMsWUFBTTtBQUNwQixhQUFPLGlCQUFpQixDQUFDO0tBQzFCLENBQUMsQ0FBQzs7QUFFSCxRQUFJLENBQUMsWUFBTTtBQUNULFVBQUksT0FBTyxHQUFHLGdCQUFnQixDQUFDLGFBQWEsQ0FBQyxhQUFhLENBQUMsQ0FBQztBQUM1RCxZQUFNLENBQUMsT0FBTyxDQUFDLENBQUMsV0FBVyxFQUFFLENBQUM7QUFDOUIsVUFBSSxDQUFDLFFBQVEsQ0FBQyxRQUFRLENBQUMsZ0JBQWdCLEVBQUUsbUJBQW1CLENBQUMsQ0FBQztBQUM5RCxZQUFNLENBQUMsT0FBTyxDQUFDLENBQUMsR0FBRyxDQUFDLFdBQVcsRUFBRSxDQUFDO0tBQ25DLENBQUMsQ0FBQztHQUNKLENBQUMsQ0FBQztDQUNKLENBQUMsQ0FBQyIsImZpbGUiOiIvaG9tZS92aWN0b3IvLmF0b20vcGFja2FnZXMvZ2l0LXN0YXR1cy9zcGVjL0dpdFN0YXR1cy1zcGVjLmpzIiwic291cmNlc0NvbnRlbnQiOlsiXCJ1c2UgYmFiZWxcIjtcblxuaW1wb3J0IEdpdFN0YXR1cyBmcm9tIFwiLi4vbGliL0dpdFN0YXR1c1wiO1xuXG5kZXNjcmliZShcIkdpdFN0YXR1c1wiLCAoKSA9PiB7XG4gIGxldCB3b3Jrc3BhY2VFbGVtZW50LCBhY3RpdmF0aW9uUHJvbWlzZTtcblxuICBiZWZvcmVFYWNoKCgpID0+IHtcbiAgICB3b3Jrc3BhY2VFbGVtZW50ID0gYXRvbS52aWV3cy5nZXRWaWV3KGF0b20ud29ya3NwYWNlKTtcbiAgICBhY3RpdmF0aW9uUHJvbWlzZSA9IGF0b20ucGFja2FnZXMuYWN0aXZhdGVQYWNrYWdlKFwiZ2l0LXN0YXR1c1wiKTtcbiAgfSk7XG5cbiAgZGVzY3JpYmUoXCJ3aGVuIHRoZSBnaXQtc3RhdHVzOnRvZ2dsZSBldmVudCBpcyB0cmlnZ2VyZWRcIiwgKCkgPT4ge1xuICAgIGl0KFwiaGlkZXMgYW5kIHNob3dzIHRoZSBwYW5lbFwiLCAoKSA9PiB7XG4gICAgICBleHBlY3Qod29ya3NwYWNlRWxlbWVudC5xdWVyeVNlbGVjdG9yKFwiLmdpdC1zdGF0dXNcIikpLm5vdC50b0V4aXN0KCk7XG5cbiAgICAgIGF0b20uY29tbWFuZHMuZGlzcGF0Y2god29ya3NwYWNlRWxlbWVudCwgXCJnaXQtc3RhdHVzOnRvZ2dsZVwiKTtcbiAgICAgIHdhaXRzRm9yUHJvbWlzZSgoKSA9PiB7XG4gICAgICAgIHJldHVybiBhY3RpdmF0aW9uUHJvbWlzZTtcbiAgICAgIH0pO1xuXG5cbiAgICAgIHJ1bnMoKCkgPT4ge1xuICAgICAgICBleHBlY3Qod29ya3NwYWNlRWxlbWVudC5xdWVyeVNlbGVjdG9yKFwiLmdpdC1zdGF0dXNcIikpLnRvRXhpc3QoKTtcbiAgICAgICAgbGV0IGVsZW1lbnQgPSB3b3Jrc3BhY2VFbGVtZW50LnF1ZXJ5U2VsZWN0b3IoXCIuZ2l0LXN0YXR1c1wiKTtcbiAgICAgICAgZXhwZWN0KGVsZW1lbnQpLnRvRXhpc3QoKTtcblxuICAgICAgICBsZXQgcGFuZWwgPSBhdG9tLndvcmtzcGFjZS5wYW5lbEZvckl0ZW0oZWxlbWVudCk7XG4gICAgICAgIGV4cGVjdChwYW5lbC5pc1Zpc2libGUoKSkudG9CZSh0cnVlKTtcbiAgICAgICAgYXRvbS5jb21tYW5kcy5kaXNwYXRjaCh3b3Jrc3BhY2VFbGVtZW50LCBcImdpdC1zdGF0dXM6dG9nZ2xlXCIpO1xuICAgICAgICBleHBlY3QocGFuZWwuaXNWaXNpYmxlKCkpLnRvQmUoZmFsc2UpO1xuICAgICAgfSk7XG4gICAgfSk7XG4gIH0pO1xuXG4gIGl0KFwiaGlkZXMgYW5kIHNob3dzIHRoZSB2aWV3XCIsICgpID0+IHtcbiAgICBqYXNtaW5lLmF0dGFjaFRvRE9NKHdvcmtzcGFjZUVsZW1lbnQpO1xuICAgIGV4cGVjdCh3b3Jrc3BhY2VFbGVtZW50LnF1ZXJ5U2VsZWN0b3IoXCIuZ2l0LXN0YXR1c1wiKSkubm90LnRvRXhpc3QoKTtcbiAgICBhdG9tLmNvbW1hbmRzLmRpc3BhdGNoKHdvcmtzcGFjZUVsZW1lbnQsIFwiZ2l0LXN0YXR1czp0b2dnbGVcIik7XG5cbiAgICB3YWl0c0ZvclByb21pc2UoKCkgPT4ge1xuICAgICAgcmV0dXJuIGFjdGl2YXRpb25Qcm9taXNlO1xuICAgIH0pO1xuXG4gICAgcnVucygoKSA9PiB7XG4gICAgICBsZXQgZWxlbWVudCA9IHdvcmtzcGFjZUVsZW1lbnQucXVlcnlTZWxlY3RvcihcIi5naXQtc3RhdHVzXCIpO1xuICAgICAgZXhwZWN0KGVsZW1lbnQpLnRvQmVWaXNpYmxlKCk7XG4gICAgICBhdG9tLmNvbW1hbmRzLmRpc3BhdGNoKHdvcmtzcGFjZUVsZW1lbnQsIFwiZ2l0LXN0YXR1czp0b2dnbGVcIik7XG4gICAgICBleHBlY3QoZWxlbWVudCkubm90LnRvQmVWaXNpYmxlKCk7XG4gICAgfSk7XG4gIH0pO1xufSk7XG4iXX0=
+//# sourceURL=/home/victor/.atom/packages/git-status/spec/GitStatus-spec.js

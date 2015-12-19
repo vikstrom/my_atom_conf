@@ -1,0 +1,34 @@
+{
+  "name": "language-z80asm",
+  "version": "0.34.0",
+  "description": "Adds syntax highlighting to z80 asm files in Atom. Primarily focused on TI calculator programming with Brass.",
+  "homepage": "https://github.com/unknownloner/language-z80",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unknownloner/language-z80.git"
+  },
+  "license": "GPLv3",
+  "engines": {
+    "atom": "*",
+    "node": "*"
+  },
+  "readme": "# z80 Assembly Language Support in Atom\n\nAdds syntax highlighting to z80 asssembly files in Atom, primarily for\nti calculator programming.\n\nHighlighting is based on [brass](http://www.benryves.com/products/brass)\n\nContributions are greatly appreciated! Please fork this repository and open a\npull request to add snippets, make grammar tweaks, etc.\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/unknownloner/language-z80/issues"
+  },
+  "_id": "language-z80asm@0.34.0",
+  "_shasum": "ada3ca3f1ba7143488bfc874b62d07d62162c878",
+  "_resolved": "file:../d-1151014-7404-am83gv/package.tgz",
+  "_from": "../d-1151014-7404-am83gv/package.tgz",
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}
